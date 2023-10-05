@@ -4,7 +4,7 @@ export const CourseSections: FC = () => {
 
     return (
         <div>
-            <h1 >Course Sections</h1>
+            <h1>Course Sections</h1>
         </div>
     );
 };

@@ -29,13 +29,13 @@ export const AppBar: FC = (props) => {
         <div className="navbar-start">
           
         <Image src={appLogo} alt="App Logo" width={50} height={50} className="mr-2" ></Image>
-        <div className="ml-3 font-serif text-xl font-bold">E-Learn (ELN)</div>
+        <div className="ml-3 font-serif text-xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#feb236] to-[#d64161]">E-Learn (ELN)</div>
         </div>
 
         {/* Wallet & Settings */}
-        {wallet && <div className="font-roboto text-xl font-bold text-center"> {(ELNbalance || 0).toLocaleString()} ELN TOKEN BALANCE</div>}
+        {wallet && <div className="font-roboto text-xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-tr from-[#feb236] to-[#d64161]"> {(ELNbalance || 0).toLocaleString()} ELN TOKEN BALANCE</div>}
         <div className="navbar-end">
-          <WalletMultiButton className="btn btn-ghost mr-4" />
+          <WalletMultiButton className="btn btn-ghost mr-4 text-transparent bg-clip-text bg-gradient-to-tr from-[#feb236] to-[#d64161]" />
         
         </div>
       </div>

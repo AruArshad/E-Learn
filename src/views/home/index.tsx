@@ -7,6 +7,8 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react"
 
 // Components
 import { RequestAirdrop } from "../../components/RequestAirdrop"
+import { CourseSections } from "../../components/CourseSections"
+
 import pkg from "../../../package.json"
 
 
@@ -31,6 +33,7 @@ export const HomeView: FC = ({}) => {
         </h1>
         <div className="text-center">
           <RequestAirdrop />
+          <CourseSections />
           {/* {wallet.publicKey && <p>Public Key: {wallet.publicKey.toBase58()}</p>} */}
         </div>
       </div>

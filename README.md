@@ -1,12 +1,20 @@
-# ELearn
+# ELearn - Learning Platform Powered by Blockchain
 
-The Solana dApp Scaffold repos are meant to house good starting scaffolds for ecosystem developers to get up and running quickly with a front end client UI that integrates several common features found in dApps with some basic usage examples. Wallet Integration. State management. Components examples. Notifications. Setup recommendations.
+ELEARN is an innovative online learning and earning platform that leverages the power of blockchain technology to provide a secure and transparent educational experience. With ELEARN, students and educators can connect, collaborate, and engage in a decentralized ecosystem that ensures data integrity, authentication, and accountability.
 
-|        Responsive        |          Desktop          |
-| :----------------------: | :-----------------------: |
-| ![](scaffold-mobile.png) | ![](scaffold-desktop.png) |
+|          Desktop          |
+| :-----------------------: |
+| ![](scaffold-desktop.png) |
 
 ## Build and Run
+
+Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
 
 Next, run the development server:
 
@@ -26,26 +34,15 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Features
 
-Each Scaffold will contain at least the following features:
+Decentralized Learning: ELEARN operates on a decentralized network, allowing students and educators to interact directly without intermediaries. This fosters trust and transparency in the learning process.
 
-```
-Wallet Integration with Auto Connec / Refresh
+Secure Credentials: Certificates and academic achievements are securely stored on the blockchain, making it easy for students to share their credentials with employers or other institutions.
 
-State Management
+ELN Token Integration: ELEARN utilizes the ELN token, an SPL token on the Solana blockchain, for secure and efficient transactions within the platform. Users can earn, spend, and trade ELN tokens for various educational services.
 
-Components: One or more components demonstrating state management
+Unlockable Content: Users can access premium educational content by using ELN tokens for unlocking sections, courses, or resources, enhancing the platform's gamified learning experience.
 
-Web3 Js: Examples of one or more uses of web3 js including a transaction with a connection provider
-
-Sample navigation and page changing to demonstate state
-
-Clean Simple Styling
-
-Notifications (optional): Example of using a notification system
-
-```
-
-A Solana Components Repo will be released in the near future to house a common components library.
+Peer-to-Peer Payments: ELEARN supports peer-to-peer payments, enabling educators to receive payments directly from students without the need for traditional financial intermediaries.
 
 ### Structure
 
@@ -69,7 +66,7 @@ style, package, configuration, and other project files
 
 ## Contributing
 
-Anyone is welcome to create an issue to build, discuss or request a new feature or update to the existing code base. Please keep in mind the following when submitting an issue. We consider merging high value features that may be utilized by the majority of scaffold users. If this is not a common feature or fix, consider adding it to the component library or cookbook. Please refer to the project's architecture and style when contributing.
+Anyone is welcome to create an issue to build, discuss or request a new feature or update to the existing code base. Please keep in mind the following when submitting an issue. We consider merging high value features that may be utilized by the majority of ELEARN users. If this is not a common feature or fix, consider adding it to the component library or cookbook. Please refer to the project's architecture and style when contributing.
 
 If submitting a feature, please reference the project structure shown above and try to follow the overall architecture and style presented in the existing scaffold.
 
@@ -77,7 +74,7 @@ If submitting a feature, please reference the project structure shown above and 
 
 To choose a task or make your own, do the following:
 
-1. [Add an issue](https://github.com/solana-dev-adv/solana-dapp-next/issues/new) for the task and assign it to yourself or comment on the issue
+1. [Add an issue](https://github.com/AruArshad/E-Learn/issues/new) for the task and assign it to yourself or comment on the issue
 2. Make a draft PR referencing the issue.
 
 The general flow for making a contribution:
@@ -87,12 +84,6 @@ The general flow for making a contribution:
 3. Commit changes to your own branch
 4. Push your work back up to your fork
 5. Submit a Pull request so that we can review your changes
-
-**NOTE**: Be sure to merge the latest from "upstream" before making a
-pull request!
-
-You can find tasks on the [project board](https://github.com/solana-dev-adv/solana-dapp-next/projects/1)
-or create an issue and assign it to yourself.
 
 ## Learn More Next Js
 
@@ -104,7 +95,5 @@ To learn more about Next.js, take a look at the following resources:
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

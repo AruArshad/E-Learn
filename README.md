@@ -2,9 +2,9 @@
 
 ELEARN is an innovative online learning and earning platform that leverages the power of blockchain technology to provide a secure and transparent educational experience. With ELEARN, students and educators can connect, collaborate, and engage in a decentralized ecosystem that ensures data integrity, authentication, and accountability.
 
-|          Desktop          |
-| :-----------------------: |
-| ![](scaffold-desktop.png) |
+|         Desktop         |
+| :---------------------: |
+| ![](elearn-desktop.png) |
 
 ## Build and Run
 

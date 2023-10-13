@@ -6,9 +6,9 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import useUserELNBalanceStore from 'stores/useUserELNBalanceStore';
 import { PublicKey } from '@solana/web3.js';
 import { sendELN } from 'utils/sendEln';
+import { fetchCourseData, updateIsPurchased } from 'data/firebaseData';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db, } from '../firebase/firebase';
-import { fetchCourseData } from 'data/firebaseData';
+import { db } from '../firebase/firebase';
 
 
 export const CourseSections: FC = () => {
@@ -32,7 +32,6 @@ export const CourseSections: FC = () => {
     const fetchData = async () => {
       try {
         const courseData = await fetchCourseData();
-        const courseData2 = await fetchCourseData();
         
         setCourseData(courseData);
         console.log(courseData);
@@ -42,16 +41,16 @@ export const CourseSections: FC = () => {
         setLoading(false);
       }
     };
-
+    
     fetchData();
-
+    
     if (publicKey) {
       // console.log("Course " + publicKey.toBase58())
       getUserELNBalance(publicKey, connection)
     }
   }, [publicKey, connect, getUserELNBalance ]);
 
-  const handleSectionPurchase = async ( section ) => {
+  const handleSectionPurchase = async ( course, section ) => {
     // notify({ type: 'info', message: 'Course: ' + course.course + ' Section: ' + section.title });
 
     if (!wallet) {
@@ -86,18 +85,28 @@ export const CourseSections: FC = () => {
     try {
         const success = await sendELN(connection, elnTokenAccount, courseOwnerAddress, publicKey, section.price, elnMintAddress, elnProgramId, sendTransaction);
         if (success) {
-          notify({ type: 'success', message: 'Section purchased successfully' });
-          // Update the isPurchased status in Firebase to true
-         
-          try {
-            const courseRef = doc(db, "Course 1", "Sections", section.id);
-            await updateDoc(courseRef, {
-              isPurchased: true
-            });
-          } catch (err) {
-            console.log(err);
-          }
+          notify({ type: 'success', message: section.title + ' section purchased successfully' });
+      
+      // Update isPurchased to true in Firebase
+      await updateIsPurchased(course.docId, section.docId);    
 
+      // To reflect the change immediately, update the local state as well
+      const updatedCourseData = courses.map((course) => {
+        if (course.id === course.id) {
+          const updatedSections = course.sections.map((s) => {
+            if (s.id === section.id) {
+              return { ...s, isPurchased: true };
+            }
+            return s;
+          });
+          return { ...course, sections: updatedSections };
+        }
+        return course;
+      });
+
+      setCourseData(updatedCourseData);
+          
+          
         } else {
           notify({ type: 'error', message: 'Failed to purchase section' });
         }
@@ -114,14 +123,14 @@ export const CourseSections: FC = () => {
       ) : (
       <div className="section-grid">
         {courses.map((course, courseIndex) => (
-          <div key={courseIndex} className="my-5 border p-4 mb-4 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-2">{course.course}</h2>
+          <div key={courseIndex} className="my-6 border p-6 mb-4 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-2">{course.courseName}</h2>
             <div className="my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {course.sections.map((section, sectionIndex) => (
                 <div
                   key={sectionIndex}
-                  className="border p-4 rounded-lg shadow cursor-pointer"
-                  onClick={() => handleSectionPurchase( section )}
+                  className="border p-7 rounded-lg shadow cursor-pointer"
+                  onClick={() => handleSectionPurchase( course, section )}
                 >
                   <div className="flex flex-col items-center mb-2">
                     {section.price !== null && (
@@ -135,7 +144,7 @@ export const CourseSections: FC = () => {
                     )}
                     <h3 className="text-lg font-semibold">{section.title}</h3>
                   </div>
-                  <p className="text-gray-600">{section.description}</p>
+                  <p className="text-gray-400">{section.description}</p>
                   {section.isPurchased || section.price === 0 ? null : (
                     <p className="text-orange-600 font-semibold mt-2">{section.price} ELN</p>
                   )}

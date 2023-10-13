@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from "react"
 import Link from "next/link"
 
 // Wallet
-import { useWallet, useConnection } from "@solana/wallet-adapter-react"
+// import { useWallet, useConnection } from "@solana/wallet-adapter-react"
 
 // Components
 import { RequestAirdrop } from "../../components/RequestAirdrop"
@@ -13,14 +13,14 @@ import pkg from "../../../package.json"
 
 
 export const HomeView: FC = ({}) => {
-  const wallet = useWallet()
-  const { connection } = useConnection()
+  // const wallet = useWallet()
+  // const { connection } = useConnection()
 
-  useEffect(() => {
-    if (wallet.publicKey) {
-      console.log(wallet.publicKey.toBase58())
-    }
-  }, [wallet.publicKey, connection])
+  // useEffect(() => {
+  //   if (wallet.publicKey) {
+  //     console.log(wallet.publicKey.toBase58())
+  //   }
+  // }, [wallet.publicKey, connection])
 
   return (
     <div className="md:hero mx-auto p-4">

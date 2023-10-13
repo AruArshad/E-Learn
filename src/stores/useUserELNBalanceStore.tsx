@@ -1,3 +1,4 @@
+//useUserELNBalanceStore
 import create, { State } from 'zustand'
 import { Connection, PublicKey } from '@solana/web3.js'
 
@@ -19,7 +20,7 @@ interface UserELNBalanceStore extends State {
                 const balance = tokenAccountInfo.value[0].account.data.parsed.info.tokenAmount.uiAmount;
                 set((s) => {
                     s.balance = balance;
-                    console.log(`ELN balance updated, `, balance);
+                    console.log(`ELN balance:`, balance);
                   }) // ELN token balance 
               } else {
                 return 0; // No ELN token balance found

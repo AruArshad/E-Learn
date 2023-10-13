@@ -7,9 +7,6 @@ import useUserELNBalanceStore from 'stores/useUserELNBalanceStore';
 import { PublicKey } from '@solana/web3.js';
 import { sendELN } from 'utils/sendEln';
 import { fetchCourseData, updateIsPurchased } from 'data/firebaseData';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
-
 
 export const CourseSections: FC = () => {
 
@@ -34,7 +31,7 @@ export const CourseSections: FC = () => {
         const courseData = await fetchCourseData();
         
         setCourseData(courseData);
-        console.log(courseData);
+        // console.log(courseData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching courses from Firestore: ', error);
@@ -54,13 +51,13 @@ export const CourseSections: FC = () => {
     // notify({ type: 'info', message: 'Course: ' + course.course + ' Section: ' + section.title });
 
     if (!wallet) {
-      notify({ type: 'error', message: 'Connect your Solana wallet first' });
+      notify({ type: 'error', message: 'Connect Wallet', description: 'Connect your Solana wallet first' });
       return;
     }
 
     // Check if the section is already purchased
     if (section.isPurchased) {
-      notify({ type: 'info', message: section.title + ' is already purchased' });
+      notify({ type: 'info', message: 'Already Purchased', description: section.title + ' is already purchased' });
       return; // No need to proceed with the purchase
     }
 
@@ -69,12 +66,12 @@ export const CourseSections: FC = () => {
     // notify({type:'info', message: 'ELN Balance: ' + elnBalance});
 
     if (section.price !== null && elnBalance < section.price) {
-      notify({ type: 'error', message: 'Insufficient ELN balance' });
+      notify({ type: 'error', message: 'Balance Insufficient', description: 'Insufficient ELN balance. Please purchase enough ELN' });
       return;
     }
 
     if (section.price === 0 ) {
-      notify({ type: 'error', message: 'Section Unavailable' });
+      notify({ type: 'error', message: 'Section Unavailable', description: 'Section currently unavailable' });
       return;
     }
 
@@ -85,7 +82,7 @@ export const CourseSections: FC = () => {
     try {
         const success = await sendELN(connection, elnTokenAccount, courseOwnerAddress, publicKey, section.price, elnMintAddress, elnProgramId, sendTransaction);
         if (success) {
-          notify({ type: 'success', message: section.title + ' section purchased successfully' });
+          notify({ type: 'success', message: 'Purchase Successful', description:section.title + ' section purchased successfully' });
       
       // Update isPurchased to true in Firebase
       await updateIsPurchased(course.docId, section.docId);    
@@ -108,7 +105,7 @@ export const CourseSections: FC = () => {
           
           
         } else {
-          notify({ type: 'error', message: 'Failed to purchase section' });
+          notify({ type: 'error', message: 'Purchase Failed', description: 'Failed to purchasen ' + section.title + ' section' });
         }
     } catch (error) {
       console.log(error);
@@ -116,37 +113,46 @@ export const CourseSections: FC = () => {
     }
 };
 
-  return (
-    <>
-      {loading ? ( // Display loading indicator while data is loading
-        <div>Loading...</div>
-      ) : (
+return (
+  <>
+    {loading ? (
+      <div className="text-center mt-4 text-gray-400 dark:text-gray-600">Loading...</div>
+    ) : (
       <div className="section-grid">
         {courses.map((course, courseIndex) => (
-          <div key={courseIndex} className="my-6 border p-6 mb-4 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-2">{course.courseName}</h2>
+          <div
+            key={courseIndex}
+            className="my-6 border p-6 mb-4 rounded-lg shadow-md bg-white dark:bg-gray-800"
+          >
+            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-blue-400">
+              {course.courseName}
+            </h2>
             <div className="my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {course.sections.map((section, sectionIndex) => (
                 <div
                   key={sectionIndex}
-                  className="border p-7 rounded-lg shadow cursor-pointer"
-                  onClick={() => handleSectionPurchase( course, section )}
+                  className="border p-7 rounded-lg shadow-md cursor-pointer bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  onClick={() => handleSectionPurchase(course, section)}
                 >
                   <div className="flex flex-col items-center mb-2">
                     {section.price !== null && (
                       <>
                         {section.isPurchased ? (
-                          <Unlock className="text-green-500 mb-1" size={20} />
+                          <Unlock className="text-green-500 dark:text-green-400 mb-1" size={35} />
                         ) : (
-                          <Lock className="text-red-500 mb-1" size={20} />
+                          <Lock className="text-red-500 dark:text-red-400 mb-1" size={20} />
                         )}
                       </>
                     )}
-                    <h3 className="text-lg font-semibold">{section.title}</h3>
+                    <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">
+                      {section.title}
+                    </h3>
                   </div>
-                  <p className="text-gray-400">{section.description}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{section.description}</p>
                   {section.isPurchased || section.price === 0 ? null : (
-                    <p className="text-orange-600 font-semibold mt-2">{section.price} ELN</p>
+                    <p className="text-orange-600 dark:text-orange-400 font-semibold mt-2">
+                      {section.price} ELN
+                    </p>
                   )}
                 </div>
               ))}
@@ -154,8 +160,9 @@ export const CourseSections: FC = () => {
           </div>
         ))}
       </div>
-      )}
-    </>
-  );
+    )}
+  </>
+);
+
 };
 

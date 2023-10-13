@@ -1,49 +1,152 @@
-import React, { FC } from 'react';
-import sections from 'data/course-sections';
+//CourseSections.tsx
+import React, { FC, useEffect, useState } from 'react';
 import { notify } from 'utils/notifications';
-import { Lock, Unlock } from 'react-feather'; // Import Feather Icons
+import { Lock, Unlock } from 'react-feather';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import useUserELNBalanceStore from 'stores/useUserELNBalanceStore';
+import { PublicKey } from '@solana/web3.js';
+import { sendELN } from 'utils/sendEln';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db, } from '../firebase/firebase';
+import { fetchCourseData } from 'data/firebaseData';
+
 
 export const CourseSections: FC = () => {
-  const handleSectionClick = (courseName: string, sectionTitle: string) => {
-    // Implement your desired action when a section is clicked here
-    // You can navigate to a different page, display more details, or perform any other action.
-    notify({ type: 'success', message: `Course Name: ${courseName} | Section Title: ${sectionTitle} clicked` });
-  };
+
+  const [courses, setCourseData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const { wallet, connect, publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
+
+  const courseOwnerAddress = new PublicKey('AsYGsWe1JH8NCSffcHfVMxDMU6QUeHo5SyxMrBtDJozW');
+  const elnMintAddress = new PublicKey('FCvvheAm84nXEW4hEG5XdMAacTBoNzumDyYXm32szY66'); // ELN token mint address
+  const elnProgramId = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+  const elnTokenAccount = new PublicKey('7nhXoGNbxsepGSe1wsJYoX63dUb3tT98CFTTufCbmr2');
+
+  const ELNbalance = useUserELNBalanceStore((s) => s.balance)
+  const { getUserELNBalance } = useUserELNBalanceStore();
+
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      try {
+        const courseData = await fetchCourseData();
+        const courseData2 = await fetchCourseData();
+        
+        setCourseData(courseData);
+        console.log(courseData);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching courses from Firestore: ', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    if (publicKey) {
+      // console.log("Course " + publicKey.toBase58())
+      getUserELNBalance(publicKey, connection)
+    }
+  }, [publicKey, connect, getUserELNBalance ]);
+
+  const handleSectionPurchase = async ( section ) => {
+    // notify({ type: 'info', message: 'Course: ' + course.course + ' Section: ' + section.title });
+
+    if (!wallet) {
+      notify({ type: 'error', message: 'Connect your Solana wallet first' });
+      return;
+    }
+
+    // Check if the section is already purchased
+    if (section.isPurchased) {
+      notify({ type: 'info', message: section.title + ' is already purchased' });
+      return; // No need to proceed with the purchase
+    }
+
+    const elnBalance = (ELNbalance || 0).toLocaleString();
+
+    // notify({type:'info', message: 'ELN Balance: ' + elnBalance});
+
+    if (section.price !== null && elnBalance < section.price) {
+      notify({ type: 'error', message: 'Insufficient ELN balance' });
+      return;
+    }
+
+    if (section.price === 0 ) {
+      notify({ type: 'error', message: 'Section Unavailable' });
+      return;
+    }
+
+    // else if (elnBalance === section.price || elnBalance > section.price) {
+    //   notify({ type: 'info', message: 'You have ' + elnBalance + ' ELN in your account' });
+    // }
+    
+    try {
+        const success = await sendELN(connection, elnTokenAccount, courseOwnerAddress, publicKey, section.price, elnMintAddress, elnProgramId, sendTransaction);
+        if (success) {
+          notify({ type: 'success', message: 'Section purchased successfully' });
+          // Update the isPurchased status in Firebase to true
+         
+          try {
+            const courseRef = doc(db, "Course 1", "Sections", section.id);
+            await updateDoc(courseRef, {
+              isPurchased: true
+            });
+          } catch (err) {
+            console.log(err);
+          }
+
+        } else {
+          notify({ type: 'error', message: 'Failed to purchase section' });
+        }
+    } catch (error) {
+      console.log(error);
+      notify({ type: 'error', message: 'An error occurred while processing the purchase: ' + error });
+    }
+};
 
   return (
     <>
+      {loading ? ( // Display loading indicator while data is loading
+        <div>Loading...</div>
+      ) : (
       <div className="section-grid">
-        {sections.map((course) => (
-          <div key={course.course} className="my-5 border p-4 mb-4 rounded-lg shadow">
+        {courses.map((course, courseIndex) => (
+          <div key={courseIndex} className="my-5 border p-4 mb-4 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-2">{course.course}</h2>
             <div className="my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {course.sections.map((section) => (
+              {course.sections.map((section, sectionIndex) => (
                 <div
-                  key={section.id}
+                  key={sectionIndex}
                   className="border p-4 rounded-lg shadow cursor-pointer"
-                  onClick={() => handleSectionClick(course.course, section.title)} // Handle click event
+                  onClick={() => handleSectionPurchase( section )}
                 >
-                  <div className="flex flex-col items-center mb-2"> {/* Flex container */}
-                    {section.isPurchased ? (
-                      <Unlock className="text-green-500 mb-1" size={20} /> // Unlocked padlock icon
-                    ) : (
-                      <Lock className="text-red-500 mb-1" size={20} /> // Locked padlock icon
+                  <div className="flex flex-col items-center mb-2">
+                    {section.price !== null && (
+                      <>
+                        {section.isPurchased ? (
+                          <Unlock className="text-green-500 mb-1" size={20} />
+                        ) : (
+                          <Lock className="text-red-500 mb-1" size={20} />
+                        )}
+                      </>
                     )}
-                    <h3 className="text-lg font-semibold">{section.title}</h3> {/* Chapter name */}
+                    <h3 className="text-lg font-semibold">{section.title}</h3>
                   </div>
                   <p className="text-gray-600">{section.description}</p>
-                  {section.isPurchased ? null : (
-                    <p className="text-orange-600 font-semibold mt-2">{section.price} ELN</p> // Display price only if not purchased
+                  {section.isPurchased || section.price === 0 ? null : (
+                    <p className="text-orange-600 font-semibold mt-2">{section.price} ELN</p>
                   )}
-                  {/* Add more section details here */}
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
+      )}
     </>
   );
 };
 
-export default sections;

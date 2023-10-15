@@ -9,7 +9,7 @@ const airdropELN = async (connection, destinationPublicKey, amount) => {
     const secretKey = Uint8Array.from(secretKeyArray);
     const ownerKeypair = Keypair.fromSecretKey(secretKey);
 
-    const elnTokenAccount = new PublicKey('7nhXoGNbxsepGSe1wsJYoX63dUb3tT98CFTTufCbmr2');
+    // const elnTokenAccount = new PublicKey('7nhXoGNbxsepGSe1wsJYoX63dUb3tT98CFTTufCbmr2');
     const elnMintAddress = new PublicKey('FCvvheAm84nXEW4hEG5XdMAacTBoNzumDyYXm32szY66');
     const elnProgramId = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
@@ -30,6 +30,8 @@ const airdropELN = async (connection, destinationPublicKey, amount) => {
     );
 
     console.log("From: " + associatedTokenFrom)
+
+    await token.createAssociatedTokenAccount(connection, ownerKeypair, elnMintAddress, destinationPublicKey, { preflightCommitment: 'processed' }, elnProgramId);
 
     const associatedTokenTo = await token.getAssociatedTokenAddress(
       elnMintAddress,

@@ -1,6 +1,6 @@
 // firebaseUserData.ts
 import { db } from '../firebase/firebase';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 // Define the FirebaseUser type
 type FirebaseUser = {

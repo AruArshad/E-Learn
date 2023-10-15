@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   // experimental: { nftTracing: true }
   env:{
-    PRIVATE_KEY : process.env.NEXT_PUBLIC_PRIVATE_KEY
+    PRIVATE_KEY : process.env.PRIVATE_KEY
   }
 }
 

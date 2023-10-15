@@ -7,13 +7,11 @@ import useUserELNBalanceStore from 'stores/useUserELNBalanceStore';
 import { PublicKey } from '@solana/web3.js';
 import { sendELN } from 'utils/sendEln';
 import { fetchCourseData, updateIsPurchased } from 'data/firebaseData';
-import { fetchUserData } from 'data/firebaseUserData';
-import { auth } from '../firebase/firebase';
 
 export const CourseSections: FC = () => {
 
   const [courses, setCourseData] = useState([]);
-  const [userData, setUserData] = useState([]);
+  // const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   // const [walletAddress, setWalletData] = useState([]);
 
@@ -154,7 +152,7 @@ return (
             key={courseIndex}
             className="my-6 border p-6 mb-4 rounded-lg shadow-md bg-white dark:bg-gray-800"
           >
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-blue-400">
+            <h2 className="text-2xl font-semibold mb-2 text-blue-600 dark:text-blue-400">
               {course.courseName}
             </h2>
             <div className="my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

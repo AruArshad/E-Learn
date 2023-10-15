@@ -1,5 +1,5 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, TransactionSignature } from '@solana/web3.js';
+import { TransactionSignature } from '@solana/web3.js';
 import { FC, useCallback } from 'react';
 import { notify } from "../utils/notifications";
 import useUserELNBalanceStore from 'stores/useUserELNBalanceStore';
@@ -17,7 +17,7 @@ export const RequestELNAirdrop: FC = () => {
     const onClick = useCallback(async () => {
         if (!publicKey) {
             console.log('error', 'Wallet not connected!');
-            notify({ type: 'error', message: 'Wallet Disconnected', description: 'Connect your wallet to continue!' });
+            notify({ type: 'error', message: 'Wallet Not Connected', description: 'Connect your wallet to continue!' });
             return;
         }
 
@@ -69,7 +69,7 @@ export const RequestELNAirdrop: FC = () => {
     return (
         <div>
             <button
-                className="px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#feb236] to-[#d64161] hover:from-pink-500 hover:to-yellow-500 ..."
+                className="px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#feb236] to-[#d64161] hover:from-red-500 hover:to-yellow-500 ..."
                 onClick={onClick}
             >
                 <span>Airdrop 50 ELN</span>

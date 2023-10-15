@@ -16,7 +16,6 @@ import { setPersistence, inMemoryPersistence, onAuthStateChanged } from "firebas
 import { auth } from "../../firebase/firebase"
 import { RequestELNAirdrop } from "components/RequestELNairdrop"
 
-
 export const HomeView: FC = ({}) => {
   const wallet = useWallet();
   // const { connection } = useConnection();
@@ -46,44 +45,44 @@ export const HomeView: FC = ({}) => {
     // login();
 
     // Set up Firebase persistence
-    setPersistence(auth, inMemoryPersistence)
-      .then(() => {
-        // Firebase is initialized with session persistence.
-      })
-      .catch((error) => {
-        console.error('Error setting persistence:', error);
-      });
+    // setPersistence(auth, inMemoryPersistence)
+    //   .then(() => {
+    //     // Firebase is initialized with session persistence.
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error setting persistence:', error);
+    //   });
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // User is signed in.
-          // You can access user properties like user.uid, user.displayName, etc.
-          console.log('User is signed in:', user.uid);
-          // You can also dispatch an action or update your component's state accordingly.
-        } else {
-          // No user is signed in.
-          console.log('No user signed in.');
-          // You can also dispatch an action or update your component's state accordingly.
-        }
-      });
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //       // User is signed in.
+    //       // You can access user properties like user.uid, user.displayName, etc.
+    //       console.log('User is signed in:', user.uid);
+    //       // You can also dispatch an action or update your component's state accordingly.
+    //     } else {
+    //       // No user is signed in.
+    //       console.log('No user signed in.');
+    //       // You can also dispatch an action or update your component's state accordingly.
+    //     }
+    //   });
 
   }, [wallet.publicKey]);
 
-  const createAccount = async (user, password) => {
-    try {
-      await SignUp(user, password);
-    } catch (error) {
-      console.error('Error Signing up: ', error);
-    }
-  }
+  // const createAccount = async (user, password) => {
+  //   try {
+  //     await SignUp(user, password);
+  //   } catch (error) {
+  //     console.error('Error Signing up: ', error);
+  //   }
+  // }
 
-  const login = async (user, password) => {
-    try {
-      await signInUser(user, password);
-    } catch (error) {
-      console.log("Error Signing in: " + error)
-    }
-  }
+  // const login = async (user, password) => {
+  //   try {
+  //     await signInUser(user, password);
+  //   } catch (error) {
+  //     console.log("Error Signing in: " + error)
+  //   }
+  // }
 
   return (
     <div className="md:hero mx-auto p-4">

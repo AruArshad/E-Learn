@@ -28,7 +28,7 @@ export const AppBar: FC = (props) => {
       <div className="navbar flex flex-row md:mb-2 shadow-lg bg-neutral text-neutral-content">
         <div className="navbar-start">
           
-        <Image src={appLogo} alt="App Logo" width={50} height={50} className="mr-2" ></Image>
+        <Image src={appLogo} alt={""} className="mr2 w-59px"></Image>
         <div className="ml-3 font-serif text-xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#feb236] to-[#d64161]">E-Learn (ELN)</div>
         </div>
 

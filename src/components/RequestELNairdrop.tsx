@@ -13,6 +13,7 @@ export const RequestELNAirdrop: FC = () => {
     const { connection } = useConnection();
     const { publicKey } = useWallet();
     const { getUserELNBalance } = useUserELNBalanceStore();
+    // const ELNbalance = useUserELNBalanceStore((s) => s.balance);
 
     const onClick = useCallback(async () => {
         if (!publicKey) {

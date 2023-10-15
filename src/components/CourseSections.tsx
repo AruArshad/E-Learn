@@ -7,13 +7,18 @@ import useUserELNBalanceStore from 'stores/useUserELNBalanceStore';
 import { PublicKey } from '@solana/web3.js';
 import { sendELN } from 'utils/sendEln';
 import { fetchCourseData, updateIsPurchased } from 'data/firebaseData';
+import { fetchUserData } from 'data/firebaseUserData';
+import { auth } from '../firebase/firebase';
 
 export const CourseSections: FC = () => {
 
   const [courses, setCourseData] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const [walletAddress, setWalletData] = useState([]);
 
   const { wallet, connect, publicKey, sendTransaction } = useWallet();
+  const user = useWallet();
   const { connection } = useConnection();
 
   const courseOwnerAddress = new PublicKey('AsYGsWe1JH8NCSffcHfVMxDMU6QUeHo5SyxMrBtDJozW');
@@ -24,20 +29,43 @@ export const CourseSections: FC = () => {
   const ELNbalance = useUserELNBalanceStore((s) => s.balance)
   const { getUserELNBalance } = useUserELNBalanceStore();
 
-  useEffect(() => {
-    
-    const fetchData = async () => {
-      try {
-        const courseData = await fetchCourseData();
-        
-        setCourseData(courseData);
-        // console.log(courseData);
+  const fetchData = async () => {
+    try {
+      const courseData = await fetchCourseData();
+      
+      setCourseData(courseData);
+      // console.log("Fetch Data: ", courseData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching courses from Firestore: ', error);
+      setLoading(false);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const userCredential = auth.currentUser;
+      if (userCredential) {
+        // console.log('User is authenticated:', userCredential);
+        const email = userCredential.email; // Construct the email based on user data
+        const uid = userCredential.uid;
+
+        const userDatas = await fetchUserData({email, uid});
+        setUserData([userDatas]);
+        console.log("Get Data: ", userDatas);
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching courses from Firestore: ', error);
-        setLoading(false);
+      } else {
+        console.log('User is not authenticated');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+
+    // getData();
     
     fetchData();
     
@@ -45,7 +73,7 @@ export const CourseSections: FC = () => {
       // console.log("Course " + publicKey.toBase58())
       getUserELNBalance(publicKey, connection)
     }
-  }, [publicKey, connect, getUserELNBalance ]);
+  }, [publicKey, connect, getUserELNBalance, user ]);
 
   const handleSectionPurchase = async ( course, section ) => {
     // notify({ type: 'info', message: 'Course: ' + course.course + ' Section: ' + section.title });

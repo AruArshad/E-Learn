@@ -5,8 +5,8 @@ import * as token from "@solana/spl-token";
 const airdropELN = async (connection, destinationPublicKey, amount) => {
   try {
     // Replace these with your actual addresses
-    const secretKeyArray = [60,174,222,124,251,138,112,154,139,147,18,232,227,78,215,205,67,158,200,44,164,146,31,99,5,5,92,96,104,212,75,136,146,171,149,129,68,110,238,118,99,144,59,88,115,245,145,237,252,150,8,117,28,106,9,109,87,147,214,2,249,237,4,199] as number[]; // Should get from an environment variable
-    const secretKey = Uint8Array.from(secretKeyArray);
+    const secret = JSON.parse(process.env.PRIVATE_KEY ?? "") as number[];
+    const secretKey = Uint8Array.from(secret);
     const ownerKeypair = Keypair.fromSecretKey(secretKey);
 
     // const elnTokenAccount = new PublicKey('7nhXoGNbxsepGSe1wsJYoX63dUb3tT98CFTTufCbmr2');
@@ -31,12 +31,25 @@ const airdropELN = async (connection, destinationPublicKey, amount) => {
 
     console.log("From: " + associatedTokenFrom)
 
-    await token.createAssociatedTokenAccount(connection, ownerKeypair, elnMintAddress, destinationPublicKey, { preflightCommitment: 'processed' }, elnProgramId);
-
     const associatedTokenTo = await token.getAssociatedTokenAddress(
       elnMintAddress,
       destinationPublicKey
     );
+
+    // Check if the associated token account already exists
+    const associatedAccountInfo = await connection.getAccountInfo(associatedTokenTo);
+
+    if (associatedAccountInfo === null) {
+      // The associated token account does not exist, so create it
+      await token.createAssociatedTokenAccount(
+        connection,
+        ownerKeypair,
+        elnMintAddress,
+        destinationPublicKey,
+        { preflightCommitment: 'processed' },
+        elnProgramId
+      );
+    }
 
     console.log("To: " + associatedTokenTo)
 

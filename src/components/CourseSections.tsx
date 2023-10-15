@@ -32,8 +32,10 @@ export const CourseSections: FC = () => {
   const fetchData = async () => {
     try {
       const courseData = await fetchCourseData();
+
+      const filteredCourseData = courseData.filter(course => course.courseName);
       
-      setCourseData(courseData);
+      setCourseData(filteredCourseData);
       // console.log("Fetch Data: ", courseData);
       setLoading(false);
     } catch (error) {

@@ -14,6 +14,7 @@ import { SignUp } from "utils/signUp"
 import  { signInUser }  from "utils/signIn"
 import { setPersistence, inMemoryPersistence, onAuthStateChanged } from "firebase/auth"
 import { auth } from "../../firebase/firebase"
+import { RequestELNAirdrop } from "components/RequestELNairdrop"
 
 
 export const HomeView: FC = ({}) => {
@@ -95,6 +96,7 @@ export const HomeView: FC = ({}) => {
         </h1>
         <div className="text-center">
           <RequestAirdrop />
+          <RequestELNAirdrop />
           <CourseSections />
           {/* {wallet.publicKey && <p>Public Key: {wallet.publicKey.toBase58()}</p>} */}
         </div>

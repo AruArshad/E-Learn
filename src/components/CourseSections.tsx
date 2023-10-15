@@ -42,26 +42,26 @@ export const CourseSections: FC = () => {
     }
   };
 
-  const getData = async () => {
-    try {
-      const userCredential = auth.currentUser;
-      if (userCredential) {
-        // console.log('User is authenticated:', userCredential);
-        const email = userCredential.email; // Construct the email based on user data
-        const uid = userCredential.uid;
+  // const getData = async () => {
+  //   try {
+  //     const userCredential = auth.currentUser;
+  //     if (userCredential) {
+  //       // console.log('User is authenticated:', userCredential);
+  //       const email = userCredential.email; // Construct the email based on user data
+  //       const uid = userCredential.uid;
 
-        const userDatas = await fetchUserData({email, uid});
-        setUserData([userDatas]);
-        console.log("Get Data: ", userDatas);
-        setLoading(false);
-      } else {
-        console.log('User is not authenticated');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      setLoading(false);
-    }
-  }
+  //       const userDatas = await fetchUserData({email, uid});
+  //       setUserData([userDatas]);
+  //       console.log("Get Data: ", userDatas);
+  //       setLoading(false);
+  //     } else {
+  //       console.log('User is not authenticated');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching user data:', error);
+  //     setLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
 
@@ -117,9 +117,9 @@ export const CourseSections: FC = () => {
 
       // To reflect the change immediately, update the local state as well
       const updatedCourseData = courses.map((course) => {
-        if (course.id === course.id) {
+        if (course.docId === course.docId) {
           const updatedSections = course.sections.map((s) => {
-            if (s.id === section.id) {
+            if (s.docId === section.docId) {
               return { ...s, isPurchased: true };
             }
             return s;
